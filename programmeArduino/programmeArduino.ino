@@ -1,5 +1,7 @@
 //----------------------
-//ANALOGIQUE |
+//BRANCHEMENT |
+//LED : sur Digital de 2 a 6 (5 pour le moment)
+//PIEZO : sur Analog A0 et A1 (seulement 2 pour le moment)
 //----------------------
 int nombreLED = 5;
 int message = 0;
