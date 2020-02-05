@@ -5,6 +5,9 @@ import serial
 ROUND = 'ROUND'
 SQUARE = 'SQUARE'
 IS_RUNNING = True
+data = {
+    "error": '100'
+}
 
 def getArduino(port, bitrate):
     return serial.Serial(port, bitrate)
@@ -22,9 +25,11 @@ if not arduino_ports:
 if len(arduino_ports) == 2:
     arduinoRound = getArduino(arduino_ports[0], 9600)
     arduinoSquare = getArduino(arduino_ports[1], 9600)
-else:
+elif len(arduino_ports) > 0 and len(arduino_ports) != 2:
     arduinoRound = getArduino(arduino_ports[0], 9600)
     arduinoSquare = ""
+else:
+    exit(1)
 
 
 def main(data):
@@ -43,6 +48,7 @@ def main(data):
 
 def send_game_over():
     print('Game Over !')
+    arduinoRound.write(data['error'].encode())
     return False
 
 
