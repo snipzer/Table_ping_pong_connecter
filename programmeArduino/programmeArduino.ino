@@ -47,8 +47,7 @@ void loop() {
   if (Serial.available()>0) {
       message = Serial.read() - '0';   
       Serial.println("Serial = " + String(Serial.read()) + "Message = " + String(message));
-  }
- if(analogRead(1)<MoyANA2-2||analogRead(0)<MoyANA1-2)
+  }else if(analogRead(1)<MoyANA2-2||analogRead(0)<MoyANA1-2)
 { 
   message = 2;
   Serial.println(1,DEC);
@@ -77,8 +76,7 @@ void loop() {
         //param : duree total du chenillard(en millisecond)
         chenillard(1000);
         break;
-      case 3:
-        Serial.println("Serial OK - FIN");
+      case 100:
         FIN();
         message = 1;
         break;
