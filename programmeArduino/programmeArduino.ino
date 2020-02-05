@@ -19,6 +19,7 @@ void setup() {
   for (short i = 2 ; i <= 6 ; i++) {
     pinMode(i, OUTPUT);
     digitalWrite (i, LOW);
+    FDeb = false;  
   }
 }
 
@@ -44,10 +45,15 @@ void loop() {
   
   //Gestion des LEDS
   if (Serial.available()>0) {
-      message = Serial.read() - '0';
-      FDeb = false;    
+      message = Serial.read() - '0';   
       Serial.println("Serial = " + String(Serial.read()) + "Message = " + String(message));
-  }  
+  }
+ if(analogRead(1)<MoyANA2-2||analogRead(0)<MoyANA1-2)
+{ 
+  message = 2;
+  Serial.println(1,DEC);
+  FDeb = true;  
+}  
   if(message !=0)
   {
     switch (message){
@@ -63,7 +69,7 @@ void loop() {
           for(i=2; i<=6; i++)
           {
             digitalWrite (i, HIGH);
-            FDeb = true;
+            FDeb = false;
             y=2;
           }
         }  
