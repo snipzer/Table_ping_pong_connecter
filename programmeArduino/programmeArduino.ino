@@ -3,7 +3,7 @@
 //LED : sur Digital de 2 a 6 (5 pour le moment)
 //PIEZO : sur Analog A0 et A1 (seulement 2 pour le moment)
 //----------------------
-int nombreLED = 5;
+int nombreLED = 6;
 int message = 0;
 short TabANA1[10];
 short TabANA2[10];
@@ -17,7 +17,7 @@ void setup() {
   Serial.begin(9600);
   MoyANA1 = 0;
   //Boucle d'initialisation des modes et mise à 0V
-  for (short i = 2 ; i <= 6 ; i++) {
+  for (short i = 2 ; i <= 7 ; i++) {
     pinMode(i, OUTPUT);
     digitalWrite (i, LOW);
     FDeb = false;  
@@ -27,8 +27,8 @@ void setup() {
 void loop() {
   //détection des impacts
   CapteurAnalog1();
-  //CapteurAnalog2();
-  Serial.println("Analog 0 = " + String(analogRead(0)));
+  CapteurAnalog2();
+  //Serial.println("Analog 0 = " + String(analogRead(0)));
   //Piezo sur A0
   /*if(analogRead(0) < MoyANA1-2)
   { 
@@ -47,10 +47,11 @@ void loop() {
       message = Serial.read() - '0';   
       //Serial.println("Serial = " + String(Serial.read()) + "Message = " + String(message));
   }
-  if(analogRead(0)<MoyANA1-2 || analogRead(0)>MoyANA1+2)
+  if(Abs(analogRead(0)-MoyANA1)>10||Abs(analogRead(1)-MoyANA2)>10)
   { 
     message = 2;
     Serial.println(1,DEC);
+    delay(50);
     FDeb = true; 
   }  
   
@@ -58,17 +59,15 @@ void loop() {
   {
     switch (message){
       case 1:
-        Serial.println("Serial OK - RAZ");
         RAZ();
         break;
       case 2:
         
         if(FDeb == true)
         {
-          Serial.println("Serial OK - TOP");
           //Allume les LEDs
           FDeb = false;
-          for(i=2; i<=6; i++)
+          for(i=2; i<=7; i++)
           {
             digitalWrite (i, HIGH);
             y=2;
@@ -76,7 +75,7 @@ void loop() {
         }  
         //Commence le chenillard
         //param : duree total du chenillard(en millisecond)
-        chenillard(1000);
+        //chenillard(1000);
         break;
       case 100:
         FIN();
@@ -107,16 +106,16 @@ void CapteurAnalog1(){
 }
 
 void CapteurAnalog2(){
-  TabANA2[j] = analogRead(1);
-  j++;
-  MoyANA2 = 0;
-  for (short i = 0; i < 10; i++) 
-  {
-    MoyANA2 = MoyANA2 + TabANA2[i];  
-  }
-  MoyANA2 = MoyANA2/10;
-  if(j > 10)
-    j = 0;
+  //TabANA2[j] = analogRead(1);
+  //j++;
+  //MoyANA2 = 0;
+  //for (short i = 0; i < 10; i++) 
+  //{
+  //  MoyANA2 = MoyANA2 + TabANA2[i];  
+  //}
+  MoyANA2 = analogRead(1);
+  //if(j > 10)
+  //  j = 0;
 }
 
 void chenillard(int time)
@@ -132,7 +131,7 @@ void chenillard(int time)
 void RAZ()
 {
   //Eteint les LEDs
-  for (byte i = 2 ; i <= 6 ; i++) {
+  for (byte i = 2 ; i <= 7 ; i++) {
     digitalWrite (i, LOW);
   }
 }
@@ -141,32 +140,39 @@ void FIN()
 { 
   //Clignotement 3 fois
   //Clignotement 1
-  for (i = 2; i <= 6; i++){
+  for (i = 2; i <= 7; i++){
     digitalWrite (i, HIGH);    
   }
   delay(1000);
-  for (i = 2; i <= 6; i++){
+  for (i = 2; i <= 7; i++){
     digitalWrite (i, LOW);    
   }
   delay(1000);
   
   //Clignotement 2
-  for (i = 2; i <= 6; i++){
+  for (i = 2; i <= 7; i++){
     digitalWrite (i, HIGH);    
   }
   delay(1000);
-  for (i = 2; i <= 6; i++){
+  for (i = 2; i <= 7; i++){
     digitalWrite (i, LOW);    
   }
   delay(1000);
   
   //Clignotement 3
-  for (i = 2; i <= 6; i++){
+  for (i = 2; i <= 7; i++){
     digitalWrite (i, HIGH);    
   }
   delay(1000);
-  for (i = 2; i <= 6; i++){
+  for (i = 2; i <= 7; i++){
     digitalWrite (i, LOW);    
   }
   delay(1000);
+}
+
+short Abs(short a){
+  if(a<0)
+   a =-a;
+
+   return a;  
 }
