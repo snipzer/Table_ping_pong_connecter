@@ -1,14 +1,22 @@
 import time
 import serial.tools.list_ports
 import serial
+import RPi.GPIO as GPIO
 
 ROUND = 'ROUND'
 SQUARE = 'SQUARE'
 IS_RUNNING = True
 payload = {
     "error": '100',
-    "time": '10'
+    "time": '10',
+    "start": '1'
 }
+pinBuzz = 3
+pinBtn = 4
+
+GPIO.setup(pinBtn, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
+GPIO.setup(pinBuzz, GPIO.OUT)
+
 
 def getArduino(port, bitrate):
     return serial.Serial(port, bitrate)
@@ -99,6 +107,24 @@ def send_game_over():
 print("Game Start !")
 data = ['', IS_RUNNING, TOUCH_NUMBER, datetime.datetime.now(), get_delta_time(TOUCH_NUMBER)]
 print("Temp pour faire l'échange :" + str(data[4]))
+start = True
+while start:
+    etat = GPIO.input(pinBtn)
+    if etat == 0:
+        arduinoRound.write(payload['start'].encode())
+        arduinoSquare.write(payload['start'].encode())
+        GPIO.output(pinBuzz, GPIO.HIGH)
+        time.sleep(0.2)
+        GPIO.output(pinBuzz, GPIO.LOW)
+        time.sleep(0.4)
+        GPIO.output(pinBuzz, GPIO.HIGH)
+        time.sleep(0.2)
+        GPIO.output(pinBuzz, GPIO.LOW)
+        time.sleep(0.4)
+        GPIO.output(pinBuzz, GPIO.HIGH)
+        time.sleep(0.5)
+        GPIO.output(pinBuzz, GPIO.LOW)
+        start = False
 while IS_RUNNING:
     data = main(data)
     IS_RUNNING = data[1]
