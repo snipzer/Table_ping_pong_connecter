@@ -15,6 +15,7 @@ short MoyANA1,MoyANA2;
 
 void setup() {  
   Serial.begin(9600);
+  MoyANA1 = 0;
   //Boucle d'initialisation des modes et mise à 0V
   for (short i = 2 ; i <= 6 ; i++) {
     pinMode(i, OUTPUT);
@@ -26,33 +27,33 @@ void setup() {
 void loop() {
   //détection des impacts
   CapteurAnalog1();
-  CapteurAnalog2();
-
+  //CapteurAnalog2();
+  Serial.println("Analog 0 = " + String(analogRead(0)));
   //Piezo sur A0
-  if(analogRead(0) < MoyANA1-2)
+  /*if(analogRead(0) < MoyANA1-2)
   { 
     Serial.println(analogRead(0));
-    Serial.println("TOP Zone1");
     Serial.println("Moyenne ANA1: "+String(MoyANA1));
   }
   //Piezo sur A1
   if(analogRead(1) < MoyANA2-2)
   { 
     Serial.println(analogRead(1));
-    Serial.println("TOP Zone2");
     Serial.println("Moyenne ANA2: "+String(MoyANA2));
-  }
+  }*/
   
   //Gestion des LEDS
   if (Serial.available()>0) {
       message = Serial.read() - '0';   
-      Serial.println("Serial = " + String(Serial.read()) + "Message = " + String(message));
-  }else if(analogRead(1)<MoyANA2-2||analogRead(0)<MoyANA1-2)
-{ 
-  message = 2;
-  Serial.println(1,DEC);
-  FDeb = true;  
-}  
+      //Serial.println("Serial = " + String(Serial.read()) + "Message = " + String(message));
+  }
+  if(analogRead(0)<MoyANA1-2 || analogRead(0)>MoyANA1+2)
+  { 
+    message = 2;
+    Serial.println(1,DEC);
+    FDeb = true; 
+  }  
+  
   if(message !=0)
   {
     switch (message){
@@ -61,14 +62,15 @@ void loop() {
         RAZ();
         break;
       case 2:
-        Serial.println("Serial OK - TOP");
-        if(FDeb == false)
+        
+        if(FDeb == true)
         {
+          Serial.println("Serial OK - TOP");
           //Allume les LEDs
+          FDeb = false;
           for(i=2; i<=6; i++)
           {
             digitalWrite (i, HIGH);
-            FDeb = false;
             y=2;
           }
         }  
@@ -90,17 +92,18 @@ void loop() {
 
 
 void CapteurAnalog1(){
-  TabANA1[j] = analogRead(0);
-  j++;
-  MoyANA1 = 0;
-  for (short i = 0; i < 10; i++) 
-  {
-    MoyANA1 = MoyANA1+ TabANA1[i]; 
+  //TabANA1[j] = analogRead(0);
+  //j++;
+  //MoyANA1 = 0;
+  //for (short i = 0; i < 10; i++) 
+  //{
+    MoyANA1 = analogRead(0); 
     //Serial.println(MoyANA1);   
-  }
-   MoyANA1 = MoyANA1/10;
-  if(j > 10)
-    j = 0;
+  //}
+   //MoyANA1 = MoyANA1/10;
+    
+  //if(j > 10)
+  //  j = 0;
 }
 
 void CapteurAnalog2(){
