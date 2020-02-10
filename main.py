@@ -21,7 +21,6 @@ GPIO.setup(pinBuzz, GPIO.OUT)
 def getArduino(port, bitrate):
     return serial.Serial(port, bitrate)
 
-
 arduino_ports = [
     p.device
     for p in serial.tools.list_ports.comports()
@@ -57,6 +56,9 @@ def main(data):
                 arduinoRound.write(data[4].encode())
                 arduinoSquare.write(payload['time'].encode())
                 arduinoSquare.write(data[4].encode())
+                GPIO.output(pinBuzz, GPIO.HIGH)
+                time.sleep(0.2)
+                GPIO.output(pinBuzz, GPIO.LOW)
                 print("Temp pour l'echange: " + str(data[4]))
             else:
                 data[1] = send_game_over()
@@ -77,6 +79,9 @@ def main(data):
                 arduinoRound.write(data[4].encode())
                 arduinoSquare.write(payload['time'].encode())
                 arduinoSquare.write(data[4].encode())
+                GPIO.output(pinBuzz, GPIO.HIGH)
+                time.sleep(0.2)
+                GPIO.output(pinBuzz, GPIO.LOW)
                 print("Temp pour l'echange: " + str(data[4]))
             else:
                 data[1] = send_game_over()
@@ -101,6 +106,9 @@ def send_game_over():
     print('Game Over !')
     arduinoRound.write(payload['error'].encode())
     arduinoSquare.write(payload['error'].encode())
+    GPIO.output(pinBuzz, GPIO.HIGH)
+    time.sleep(0.4)
+    GPIO.output(pinBuzz, GPIO.LOW)
     return False
 
 
