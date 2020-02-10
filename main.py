@@ -14,6 +14,8 @@ payload = {
 pinBuzz = 3
 pinBtn = 4
 
+GPIO.setmode(GPIO.BCM)
+
 GPIO.setup(pinBtn, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
 GPIO.setup(pinBuzz, GPIO.OUT)
 
