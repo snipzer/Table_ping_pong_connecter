@@ -119,8 +119,7 @@ data = ['', IS_RUNNING, TOUCH_NUMBER, datetime.datetime.now(), get_delta_time(TO
 print("Temp pour faire l'échange :" + str(data[4]))
 start = True
 while start:
-    etat = GPIO.input(pinBtn)
-    if etat == 0:
+    if GPIO.input(pinBtn) == GPIO.LOW:
         arduinoRound.write(payload['start'].encode())
         arduinoSquare.write(payload['start'].encode())
         GPIO.output(pinBuzz, GPIO.HIGH)
