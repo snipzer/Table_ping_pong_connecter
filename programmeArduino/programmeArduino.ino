@@ -9,6 +9,8 @@ short TabANA1[10];
 short TabANA2[10];
 short TabANA3[10];
 short TabANA4[10];
+unsigned long Currentime;
+int interval;
 short i,j,y;
 bool FDeb;
 short MoyANA1,MoyANA2;
@@ -28,23 +30,15 @@ void loop() {
   //détection des impacts
   CapteurAnalog1();
   CapteurAnalog2();
-  //Serial.println("Analog 0 = " + String(analogRead(0)));
-  //Piezo sur A0
-  /*if(analogRead(0) < MoyANA1-2)
-  { 
-    Serial.println(analogRead(0));
-    Serial.println("Moyenne ANA1: "+String(MoyANA1));
-  }
-  //Piezo sur A1
-  if(analogRead(1) < MoyANA2-2)
-  { 
-    Serial.println(analogRead(1));
-    Serial.println("Moyenne ANA2: "+String(MoyANA2));
-  }*/
+  int Time;
   
   //Gestion des LEDS
   if (Serial.available()>0) {
-      message = Serial.read() - '0';   
+      message = Serial.read() - '0'; 
+     if(message == 10)
+     {
+      Time = Serial.read() - '0';  
+     }  
       //Serial.println("Serial = " + String(Serial.read()) + "Message = " + String(message));
   }
   if(Abs(analogRead(0)-MoyANA1)>10||Abs(analogRead(1)-MoyANA2)>10)
@@ -66,6 +60,7 @@ void loop() {
         if(FDeb == true)
         {
           //Allume les LEDs
+          Currentime = millis();
           FDeb = false;
           for(i=2; i<=7; i++)
           {
@@ -75,7 +70,7 @@ void loop() {
         }  
         //Commence le chenillard
         //param : duree total du chenillard(en millisecond)
-        //chenillard(1000);
+        chenillard(Time);
         break;
       case 100:
         FIN();
@@ -91,40 +86,23 @@ void loop() {
 
 
 void CapteurAnalog1(){
-  //TabANA1[j] = analogRead(0);
-  //j++;
-  //MoyANA1 = 0;
-  //for (short i = 0; i < 10; i++) 
-  //{
     MoyANA1 = analogRead(0); 
-    //Serial.println(MoyANA1);   
-  //}
-   //MoyANA1 = MoyANA1/10;
-    
-  //if(j > 10)
-  //  j = 0;
 }
 
 void CapteurAnalog2(){
-  //TabANA2[j] = analogRead(1);
-  //j++;
-  //MoyANA2 = 0;
-  //for (short i = 0; i < 10; i++) 
-  //{
-  //  MoyANA2 = MoyANA2 + TabANA2[i];  
-  //}
   MoyANA2 = analogRead(1);
-  //if(j > 10)
-  //  j = 0;
 }
 
-void chenillard(int time)
+void chenillard(int Time)
 {
   //Chenillard
+  if(millis() - Currentime >  Time/nombreLED){
+    Currentime = millis();
   if( y < 8 ) {
-    delay (time/nombreLED);
+    //delay (Time/nombreLED);
     digitalWrite (y, LOW); // éteint la DEL
     y++;
+  }
   }
 }
   

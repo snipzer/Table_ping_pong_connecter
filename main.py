@@ -11,8 +11,8 @@ payload = {
     "time": '10',
     "start": '1'
 }
-pinBuzz = 3
-pinBtn = 4
+pinBuzz = 17
+pinBtn = 27
 
 GPIO.setmode(GPIO.BCM)
 
